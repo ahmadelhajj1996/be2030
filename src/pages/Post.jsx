@@ -26,7 +26,7 @@ const categoryColumns = (onDeleteClick, navigate) => [
     render: (item) =>
       item?.image ? (
         <img
-          src={`https://phplaravel-1483035-5810347.cloudwaysapps.com/${item.image}`}
+          src={`https://phplaravel-1483035-5810347.cloudwaysapps.com/storage/${item.image}`}
           alt={item?.title || "صورة"}
           className="w-12 h-12 object-cover rounded"
           loading="lazy"
@@ -333,3 +333,4 @@ function Parts() {
 }
 
 export default Parts;
+
