@@ -47,7 +47,7 @@ function Part() {
            </div>
            <div className="flex justify-center items-center mt-4">
              <img
-               src={`https://phplaravel-1483035-5810347.cloudwaysapps.com/${data?.image}`}
+               src={`https://phplaravel-1483035-5810347.cloudwaysapps.com/storage/${data?.image}`}
                alt="no photo"
                className="w-100 h-100"
              />
@@ -58,5 +58,6 @@ function Part() {
        </>
      );
 }
+
 
 export default Part
