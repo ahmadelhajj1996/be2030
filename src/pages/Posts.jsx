@@ -41,12 +41,7 @@ const categoryColumns = (onDeleteClick , navigate) => [
     width: "600px",
     render: (item) => <span className="font-semibold">{item?.title}</span>,
   },
-  {
-    key: "category",
-    title: "التصنيف",
-    width: "200px",
-    render: (item) => <span className="font-semibold">{item?.category}</span>,
-  },
+ 
   {
     key: "actions",
     title: "الإجراءات",
@@ -336,4 +331,5 @@ function Posts() {
 }
 
 export default Posts;
+
 
