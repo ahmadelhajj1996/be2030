@@ -136,7 +136,7 @@ function Posts() {
     return data.map((post) => ({
       id: post.id,
       title: post.title,
-      category: post.category?.title || "بدون تصنيف",
+      category: post.parts[0]?.category_id ,
       image: post.image,
     }));
   }, [data]);
@@ -336,3 +336,4 @@ function Posts() {
 }
 
 export default Posts;
+
