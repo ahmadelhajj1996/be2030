@@ -41,7 +41,12 @@ const categoryColumns = (onDeleteClick , navigate) => [
     width: "600px",
     render: (item) => <span className="font-semibold">{item?.title}</span>,
   },
- 
+  {
+    key: "category",
+    title: "التصنيف",
+    width: "200px",
+    render: (item) => <span className="font-semibold">{item?.category}</span>,
+  },
   {
     key: "actions",
     title: "الإجراءات",
@@ -131,7 +136,7 @@ function Posts() {
     return data.map((post) => ({
       id: post.id,
       title: post.title,
-      category: post.parts[0]?.category_id ,
+      category: post.parts[0]?.category_id || "بدون تصنيف",
       image: post.image,
     }));
   }, [data]);
@@ -331,5 +336,3 @@ function Posts() {
 }
 
 export default Posts;
-
-
