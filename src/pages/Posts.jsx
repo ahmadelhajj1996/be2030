@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback } from "react";
 import { MdAdd } from "react-icons/md";
-import { FiEye , FiTrash2 } from "react-icons/fi";
+import { FiEye, FiTrash2 } from "react-icons/fi";
 import Table from "../components/display/Table";
 import Container from "../components/layout/Container";
 import Delete from "../components/feedback/Delete";
@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const categoryColumns = (onDeleteClick , navigate) => [
+const categoryColumns = (onDeleteClick, navigate) => [
   {
     key: "id",
     title: "الرقم التسلسلي",
@@ -55,7 +55,7 @@ const categoryColumns = (onDeleteClick , navigate) => [
       <div className="flex gap-x-8">
         <button
           onClick={() => navigate(`/posts/${item.id}`)}
-          aria-label="حذف"
+          aria-label="عرض"
           className="p-1 hover:bg-gray-100 rounded transition-colors"
         >
           <FiEye className="w-5 h-5" />
@@ -74,13 +74,15 @@ const categoryColumns = (onDeleteClick , navigate) => [
 
 const initialPostValues = {
   title: "",
-  category_id: '',
+  description: "",
+  category_id: "",
   image: null,
 };
 
 const postSchema = Yup.object().shape({
   title: Yup.string().required("مطلوب"),
-  category_id: Yup.number().required("مطلوب"),
+  description: Yup.string().required("مطلوب"), // Added validation for description
+  category_id: Yup.number().required("مطلوب").min(1, "مطلوب"), // Added min validation
   image: Yup.mixed()
     .required("الصورة مطلوبة")
     .test("fileSize", "حجم الملف كبير جداً (الحد الأقصى 5MB)", (value) => {
@@ -96,17 +98,23 @@ const postSchema = Yup.object().shape({
 function Posts() {
   const [modal, setModal] = useState("");
   const [currentItem, setCurrentItem] = useState(null);
-  const navigate =  useNavigate()
-  const { data:categories, isFetched : categoriesFetched } = useGet(["categories"], "categories", {
-    staleTime: 5 * 60 * 1000,
-  });
-
-
+  const navigate = useNavigate();
+  const { data: categories, isFetched: categoriesFetched } = useGet(
+    ["categories"],
+    "categories",
+    {
+      staleTime: 5 * 60 * 1000,
+    }
+  );
 
   // Fetch posts
-  const { data, isFetched ,  isLoading, isError, error } = useGet(["posts"], "posts", {
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data, isFetched, isLoading, isError, error } = useGet(
+    ["posts"],
+    "posts",
+    {
+      staleTime: 5 * 60 * 1000,
+    }
+  );
 
   const { mutate: deleteItem } = useDelete({
     invalidateQueries: ["posts"],
@@ -136,7 +144,7 @@ function Posts() {
     return data.map((post) => ({
       id: post.id,
       title: post.title,
-      category: post.parts[0]?.category_id || "بدون تصنيف",
+      category: post.category?.title || "بدون تصنيف",
       image: post.image,
     }));
   }, [data]);
@@ -157,6 +165,7 @@ function Posts() {
     // Create FormData for file upload
     const formData = new FormData();
     formData.append("title", values.title);
+    formData.append("description", values.description); // Fixed: Added description to formData
     formData.append("category_id", values.category_id);
 
     if (values.image) {
@@ -265,6 +274,23 @@ function Posts() {
               name="title"
             />
           </div>
+          <div className="relative">
+            <label htmlFor="description" className="block mb-2 font-medium">
+              الوصف:
+            </label>
+            <Field
+              id="description"
+              name="description"
+              as="textarea"
+              className="field w-full p-2 border border-gray-300 rounded"
+              rows={5}
+            />
+            <ErrorMessage
+              component="div"
+              className="error-message text-red-500 text-sm mt-1"
+              name="description"
+            />
+          </div>
 
           <div className="relative">
             <label htmlFor="category_id" className="block mb-2 font-medium">
@@ -276,8 +302,7 @@ function Posts() {
               as="select"
               className="field w-full p-2 border border-gray-300 rounded"
             >
-              <option value={""}>اختر الصنف</option>
-
+              <option value="">اختر الصنف</option>
               {categoriesFetched &&
                 categories?.map((category) => (
                   <option key={category.id} value={category.id}>
